@@ -1,0 +1,423 @@
+﻿@using RSS.Models
+@model RSSUser
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/StyleSheet.css")" />
+    <title>RSS</title>
+    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/annyang/1.1.0/annyang.min.js"></script>
+    <script>
+        
+
+    </script>
+
+    <script src="http://code.jquery.com/jquery-1.8.0.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+    $(document).ready(function () {
+
+       
+
+        window.onscroll = function () {
+            
+            var mainDiv = document.getElementById('mainDiv');
+            //document.getElementById('FeedListDiv').style = "top:" + mainDiv.scrollTop.toString();//.clientTop = mainDiv.scrollTop;
+        }
+
+
+        if (annyang) {
+            var scrollAmount = 200;
+            var currentZoom = 100;
+            var commands = {};
+            commands['Hello'] = function () { alert('Hello'); }
+            commands['Scroll Down'] = function () { document.body.scrollTop = document.body.scrollTop + scrollAmount; }
+            commands['Scroll Up'] = function () { document.body.scrollTop = document.body.scrollTop - scrollAmount; }
+            commands['Scroll Left'] = function () { document.body.scrollLeft = document.body.scrollLeft - scrollAmount; }
+            commands['Scroll Right'] = function () { document.body.scrollLeft = document.body.scrollTop + scrollAmount; }
+            commands['Zoom In'] = function () { currentZoom = currentZoom * 1.5; document.body.style.zoom = currentZoom.toString() + "%"; }
+            commands['Zoom Out'] = function () { currentZoom = currentZoom / 1.5; document.body.style.zoom = currentZoom.toString() + "%"; }
+            commands['Show Options'] = function () { var options = ""; for (var m in commands) { options += m.toString() + "\n"; } alert(options); }
+            commands['Log Out'] = function () { $.ajax({ url: "@Url.Action("Logout", "Home")", datatype: "html" }); }
+            commands['Load More'] = function () { $.ajax({ url: "@Url.Action("LoadMore", "RSS")", data: { cid: '@Model.currentChannel.id' }, datatype: "html" }); }
+
+            commands['Read Options'] = function () { var options = ""; for (var m in commands) { options += m.toString() + " "; } alert(options); textToSpeech(options); }
+
+            commands['Read Subscription'] = function () {
+                  @if(Model.currentChannel != null)
+                  {              
+                      <text>
+                          var readOff = "@Html.Raw(Model.currentChannel.title)" + " " + "@Html.Raw(Model.currentChannel.description)";
+                      </text>
+                      foreach (var it in Model.currentChannel.item)
+                      {
+                          <text>
+                              readOff += "@Html.Raw(it.titleI.Replace(' ', '+'))" + " ";
+                          </text>
+                      }
+
+                      <text>
+            
+                        
+                      textToSpeech(readOff);
+                      </text>
+                  }
+            }
+
+
+            
+            @foreach(var c in Model.categories)
+                {
+                    <text>
+
+            commands['@c.name'] = function () {
+                var cid = '@c.id';
+
+
+                $.ajax({
+                    url: "@Url.Action("ExpandCategory", "RSS")",
+                    data: { cid: cid },
+                    dataType: "html",
+                    success: function () { location.reload(true); }
+                });
+
+            }
+
+            </text>
+                    if(c.isCurrent == true)
+                    {
+                        foreach (var ch in Model.subscriptions)
+                        {
+                            if (ch.categoryId == c.id)
+                            {
+                                <text>
+            commands['@ch.title'] = function () {
+                var title = '@ch.title';
+
+                $.ajax({
+                    url: "@Url.Action("SetCurrent", "RSS")",
+                    data: { nm: title },
+                    dataType: "html",
+                    success: function () { location.reload(true); }
+                });
+
+            }
+            </text>
+                            }
+                            if (ch.isCurrent == true)
+                            {
+                                int ct = 0;
+                                string [] stringArray = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eightteen", "nineteen", "twenty"};
+                                foreach (var it in ch.item)
+                                {
+                                    <text>
+            commands['@it.titleI'] = function () {
+
+                var itLinkI = '@it.linkI';
+
+                $.ajax({
+                    url: "@Url.Action("SetCurrentArticle", "RSS")",
+                    data: { itemLink: itLinkI },
+                    dataType: "html",
+                    success: function () { location.reload(true); }
+                });
+
+            }
+
+
+            commands['Item ' + '@stringArray[ct]'] = function () {
+
+                var itLinkI = '@it.linkI';
+
+                $.ajax({
+                    url: "@Url.Action("SetCurrentArticle", "RSS")",
+                    data: { itemLink: itLinkI },
+                    dataType: "html",
+                    success: function () { location.reload(true); }
+                });
+
+            }
+
+            commands['Read ' + '@stringArray[ct]'] = function () {
+
+                var txt = '@it.titleI.Replace(' ', '+')' + ' ' + '@it.descriptionI.Replace(' ', '+')';
+                alert(txt);
+                textToSpeech(txt);
+
+            }
+
+            </text>
+
+                                    ct++;
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+
+        }
+
+        annyang.addCommands(commands);
+        annyang.start();
+
+
+        function constructUrl(str) {
+            var url = "http://translate.google.com/translate_tts?tl=en&q=";
+            
+            url += str;
+            return url;
+        }
+
+        var stringChunks = [];
+        function textToSpeech(readText) {
+            
+            var maxChars = 90;
+            stringChunks = [];
+            var perSplit = readText.split('.');
+            for (var j = 0; j < perSplit.length; j++) {
+                var text = perSplit[j];
+
+                while (text) {
+
+                    if (text.length < maxChars) {
+                        stringChunks.push(text);
+                        break;
+                    }
+                    else {
+                        var strT = text.substr(0, maxChars).split('+');
+                        var s = "";
+                        var endIndex = 0;
+                        for (var i = 0; i < strT.length - 1; i++) {
+                            s += strT[i] + "+";
+                            endIndex += strT[i].length + 1;
+                        }
+                        stringChunks.push(s);
+                        text = text.substr(endIndex);
+                    }
+                }
+            }
+            
+            
+            playTextAudio(0);
+
+
+        }
+
+
+
+        function playTextAudio(index) {
+
+            if (index >= stringChunks.length) { return; }
+            var source = constructUrl(stringChunks[index]);
+            
+            var a = document.createElement('a');
+            a.href = source;
+            a.rel = 'noreferrer';
+            a.target = 'ttsFrame';
+
+            a.click();
+            setTimeout(function () { playTextAudio(index + 1); }, 7500);
+        }
+
+      
+        
+
+
+        document.getElementById('btnReadSub').onclick = function ReadSubscription() {
+            
+            @if(Model.currentChannel != null)
+            {              
+                <text>
+                    var readOff = "@Html.Raw(Model.currentChannel.title)"; //+ " " + "Html.Raw(Model.currentChannel.description)";
+                </text>
+                foreach (var it in Model.currentChannel.item)
+                {
+                    <text>
+                        readOff += "@Html.Raw(it.titleI.Replace(' ', '+').Replace('.', ','))" + ". ";
+                    </text>
+                }
+
+                <text>            
+                    textToSpeech(readOff);
+                </text>
+            }
+        }
+
+        document.getElementById('btnReload').onclick = function updateParse() {
+            location.reload(true);
+        }
+     
+            
+        document.getElementById('btnAddFeed').onclick = function btnAdd() {
+
+            var name = window.prompt("Enter Name: ");
+            var cate = window.prompt("Enter Category Name: ");
+            var url = window.prompt("Enter RSS Feed Url: ");
+
+            if (name != null && cate != null && url != null) {
+                $.ajax({
+                    url: "@Url.Action("AddFeed", "RSS")",
+                    data: { url: url, name: name, cat: cate },
+                dataType: "html",
+                success: function () { location.reload(true); }
+            });
+        }
+
+    }
+        
+        @if (Model.currentChannel != null)
+        {
+            for (int i = 0; i < Model.currentChannel.item.Count; i++)
+            {
+
+                Item it = Model.currentChannel.item[i];
+                string ttsText = it.titleI + ", " + it.pubDateI + ". " +it.descriptionI.Replace('.', ',') + ". ";
+                string btnID = "btn" + i.ToString();
+                ttsText = ttsText.Replace(' ', '+');
+                
+                <text>
+        document.getElementById("@btnID").onclick = function () {
+            
+            var tUrl = "@Html.Raw(ttsText)";
+            
+            textToSpeech(tUrl);                  
+               }
+                </text>
+            }
+        }
+
+        function dummy() { }
+    });
+
+    </script>
+</head>
+<body>
+    <div id="mainDiv">
+        <div class="tbox">
+            <table class="tblTop">
+                <tr>
+                    <td><h1 class="textTtl">Talking RSS Reader</h1></td>
+
+                    <td><img title="Add Feed" id="btnAddFeed" class="ttl" src="http://images.wikia.com/fallout/images/archive/c/c2/20110526114923!RSS_button.png" width="70" height="70" /></td>
+                    <td><img title="Read Page" class="ttl" src="http://catincan.files.wordpress.com/2013/11/google-voice-search-icon.png?w=300&h=300" width="80" height="80" /></td>
+                    <td><img id="btnReadSub" class="ttl" src="http://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/256/Apps-preferences-desktop-text-to-speech-icon.png" width="70" height="70" /></td>
+                    <td><img title="Refresh" id="btnReload" class="ttl" src="http://png-3.findicons.com/files/icons/2443/bunch_of_cool_bluish_icons/512/reload.png" width="70" height="70" /></td>
+
+                    <td><h1 style="margin-left:200px"><i>@Model.FirstName &nbsp; @Model.LastName</i></h1></td>
+                    <td><h1 style="margin-left:50px">@Html.ActionLink("Account", "Edit", "Home") &nbsp; &nbsp;</h1></td>
+                    <td><h1>@Html.ActionLink("Log Out", "Logout", "Home")</h1></td>
+
+                </tr>
+            </table>
+        </div>
+        <div>
+            @if(Model.categories.Count > 0)
+            { 
+                <div id="FeedListDiv" class="fix">
+                    @Html.Partial("FeedList", Model)
+                </div>
+            }
+        </div>
+        <table class="tblBot">
+         
+            <tr>
+                <td>
+                    
+                    @if(Model.currentChannel != null)
+                    {
+                        
+                        channel ch = Model.currentChannel;
+                        if (ch.isCurrent == true)
+                        {
+                            string ttsChTtl = ch.title.Replace(' ', '+') + ". " + ch.description.Replace(' ', '+');
+                            if (ttsChTtl.Length > 90) { ttsChTtl = ttsChTtl.Substring(0, 90); }
+                            string ttsCh = "http://translate.google.com/translate_tts?tl=en&q=" + ttsChTtl;
+                            
+                            <div class="box">
+                                
+                                <h1><a id="0" href="@ttsCh" rel="noreferrer" target="ttsFrame">@ch.title</a></h1>
+                                <h3>@ch.description</h3>
+                                <h2>@ch.feed</h2>
+                                <h4>@ch.pubDate</h4>
+                                <img src="@ch.imageUrl" class="chImg"/>
+                                
+                            </div>
+                            <div class="lbox">
+                                <div class="inBox">
+                                    @if (ch.item != null)
+                                    {
+                                        int itemCount = 0;
+                                        foreach (var it in ch.item)
+                                        {
+                                            string btnID = "btn" + itemCount.ToString();
+                                            <h1>@(itemCount + 1) ) @Html.ActionLink(it.titleI, "SetCurrentArticle", "RSS", new { itemLink = it.linkI }, null)</h1>
+
+                                            <h2>
+                                                <i>@it.pubDateI &nbsp; &nbsp;</i>
+                                                <button id="@btnID" class="btnIn"></button>
+                                            </h2>
+                                            itemCount++;
+
+                                            if (it.linkI.Contains(".mp3"))
+                                            {
+                                                string playerId = "player" + itemCount.ToString();
+                                                <div id="@playerId">
+                                                    <audio controls style="width:600px">
+                                                        <source src="@it.linkI" type="audio/mp3" />
+                                                        <source src="@it.linkI" type="audio/mpeg" />
+                                                    </audio>
+                                                </div>
+                                            }
+                                            
+                                            if (it.authors != null)
+                                            {
+                                                foreach (var aut in it.authors)
+                                                {
+                                                    <h4>@aut.name</h4>
+                                                }
+                                            }
+                                            @Html.Raw(it.img)
+                                            if(it.iframe != null)
+                                            { 
+                                                if(it.iframe.Contains("iframe"))
+                                                { 
+                                                    @Html.Raw(it.iframe)
+                                                    @Html.Raw("</iframe>")
+                                                }
+                                            }
+                                            <div class="desc">@Html.Raw(it.descriptionI)</div>
+                                        }
+                                    }
+                                    <h3>@Html.ActionLink("Load More...", "LoadMore", "RSS", new { cid = ch.id }, null)</h3>
+                                </div>
+                            </div>
+                        }
+
+                    }
+                </td>
+                @if (Model.currentArticle != "" && Model.currentChannel != null && Model.currentArticle != null)
+                {
+                        <td style="margin-top:250px">
+                            <div class="frame">
+                                <iframe id="subPage" src=@Model.currentArticle width="800" height="1400"></iframe>
+                            </div>
+                        </td>
+                }
+            
+            
+        </table>
+        <iframe name="ttsFrame" ></iframe>
+    </div>
+    
+</body>
+
+</html>

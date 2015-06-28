@@ -1,0 +1,72 @@
+﻿@using RSS.Models
+@using RSS
+@model RSSUser
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create</title>
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/StyleSheet.css")" />
+    <!-- Including these three files will allow MVC to validate the Model's properties without need for postback -->
+    <script type="text/javascript" src="~/Scripts/jquery-2.1.0.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+
+        });
+    </script>
+
+
+
+
+</head>
+<body>
+    <div class="lgn">
+        <!-- Html.BeginForm() is similar to the <form> tag, but allows us to dynamically adjust form variables. -->
+        @Html.ActionLink("Login as User", "Login")
+        @if (Model.Email != null && Model.Email != "")
+        {
+            @Html.ActionLink("Delete Account", "DeleteAccount", new { id = Model.Id }, null)
+        }
+        @using (Html.BeginForm())
+        {
+            <table>
+                <tr>
+                    <!-- Html.LabelFor / EditorFor / ValidationMessageFor is the MVC way to build
+                        form elements without having to worry about specific input types.  Very handy.
+                        -->
+                    <td>@Html.LabelFor(m => m.Email)</td>
+                    <td>@Html.EditorFor(m => m.Email)</td>
+                    <td>@Html.ValidationMessageFor(m => m.Email)</td>
+                </tr>
+                <tr>
+                    <td>@Html.LabelFor(m => m.FirstName)</td>
+                    <td>@Html.EditorFor(m => m.FirstName)</td>
+                    <td>@Html.ValidationMessageFor(m => m.FirstName)</td>
+                </tr>
+                <tr>
+                    <td>@Html.LabelFor(m => m.LastName)</td>
+                    <td>@Html.EditorFor(m => m.LastName)</td>
+                    <td>@Html.ValidationMessageFor(m => m.LastName)</td>
+                </tr>
+                <tr>
+                    <td>@Html.LabelFor(m => m.Password)</td>
+                    <td>@Html.EditorFor(m => m.Password)</td>
+                    <td>@Html.ValidationMessageFor(m => m.Password)</td>
+                </tr>
+                
+            </table>
+            <input type="submit" value="Create User" style="background-color:silver" />
+        }
+       
+    </div>
+</body>
+</html>

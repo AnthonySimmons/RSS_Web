@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="RSS-2_0-Schema"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name = "rss">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="channel">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="title" type="xs:string" minOccurs ="0"/>
+              <xs:element name="link" type="xs:string" minOccurs ="0" maxOccurs="unbounded"/>
+              <xs:element name="description" type="xs:string" minOccurs ="0"/>
+              <xs:element name="language" type="xs:string" minOccurs ="0"/>
+              <xs:element name="pubDate" type="xs:string" minOccurs="0"/>
+              <xs:element name="lastBuildDate" type="xs:string" minOccurs ="0"/>
+              <xs:element name="copyright" type="xs:string" minOccurs ="0"/>
+              <xs:element name="image" minOccurs ="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="url" type="xs:string"/>
+                    <xs:element name="title" type="xs:string"/>
+                    <xs:element name="link" type="xs:string"/>
+                    <xs:element name="width" type="xs:string"/>
+                    <xs:element name="height" type="xs:string"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="ttl" type="xs:string" minOccurs="0"/>
+              <xs:element name="item" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="title" type="xs:string"/>
+                    <xs:element name="description" type="xs:string"/>
+                    <xs:element name="link" type="xs:string"/>
+                    <xs:element name="guid" type="xs:string"/>
+                    <xs:element name="pubDate" type="xs:string"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="version" type ="xs:string" use ="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

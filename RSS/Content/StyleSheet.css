@@ -1,0 +1,156 @@
+﻿body {
+    background-image: url(http://us.cdn001.fansshare.com/photos/background/backgrounds-website-background-blue-blue-1535195838.jpg);
+}
+
+div.lgn{
+    width:400px; 
+    margin:0 auto; 
+    vertical-align:central; 
+    border:3px solid black; 
+    background-color:silver
+}
+
+div.tbox{
+    background-color:silver;
+    border:5px solid black;
+    margin-bottom:50px;
+    text-align:center;
+    
+}
+
+div.box{
+    background-color:silver;
+    border:5px solid black;
+    margin-bottom:50px;
+    margin-left:100px;
+    text-align:center;
+    width:700px;
+}
+
+div.lbox{
+    background-color:silver;
+    border:5px solid black;
+    margin-bottom:50px;
+    margin-left:100px;
+    text-align:left;
+    width:700px;
+    align-content:center;
+}
+
+div.frame{
+    background-color:silver;
+    border:5px solid black;
+    margin-bottom:50px;
+    text-align:left;
+    width:805px;
+    margin-left: 50px;
+}
+
+div.fix{
+     position:fixed;
+     left:10px;
+     top:auto;
+     border:5px solid black; 
+     z-index:3;
+     background-color:silver; 
+     margin-right:70px;
+     width:300px
+}
+
+button.btnRem{
+    background-image:url(http://icons.iconarchive.com/icons/visualpharm/must-have/256/Remove-icon.png);
+    background-size: 25px;
+    width:25px;
+    height:35px;    
+    padding-top:10px;
+    background-position:bottom;
+    background-color:transparent;
+    border:none;
+    cursor:pointer;
+    background-repeat:no-repeat;
+}
+
+button.btnEdit{
+    background-color:transparent;
+    cursor:pointer;
+    border:none;
+    background-repeat:no-repeat;
+    width:25px;
+    height:25px;
+    background-size:25px;
+    background-image:url(http://skirogaining.tojnar.cz/gpx/gpx-edit.svg);
+}
+
+div.desc{
+    border:1px solid black; 
+    background-color:white;
+    width:600px;
+}
+
+div.inBox{
+    margin:auto; 
+    margin-left:15px;
+}
+
+img.ttl{
+    cursor:pointer;
+    margin-right:30px
+}
+
+img.chImg{
+    max-height:250px; 
+    max-width:250px
+}
+
+input.btnTtl{
+    cursor:pointer; 
+    background-color:transparent; 
+    border:none; 
+    background-size:50px; 
+    background-image: url(http://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/256/Apps-preferences-desktop-text-to-speech-icon.png); 
+    width:50px; 
+    height:50px;
+}
+
+button.btnIn{
+    cursor:pointer; 
+    background-size: 30px; 
+    background-color:transparent; 
+    border:none; 
+    background-image: url(http://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/256/Apps-preferences-desktop-text-to-speech-icon.png); 
+    width: 30px;
+    height: 30px;
+}
+
+button.btnRSS{
+    background-image: url(http://images.wikia.com/fallout/images/archive/c/c2/20110526114923!RSS_button.png);
+    background-size: 50px;
+    width: 50px;
+    height: 50px;
+    cursor:pointer;
+    border: none;
+    background-color: transparent;
+    margin-left: 125px;
+}
+
+h1.textTtl{
+    font:bold 52px Elephant; 
+    color:blue; 
+    margin-right:50px;
+}
+
+h1.cat{
+    color:blue; 
+    cursor:pointer; 
+    font-size:32px;
+}
+
+table.tblTop{
+    margin-left:50px; 
+    padding-top:0em;
+}
+
+table.tblBot{
+    margin:auto; 
+    margin-left:250px
+}

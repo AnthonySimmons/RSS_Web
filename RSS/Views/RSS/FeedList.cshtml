@@ -1,0 +1,109 @@
+﻿@using RSS.Models
+@model RSSUser
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+                @foreach (var c in Model.categories)
+                { 
+                    <text>
+                        document.getElementById('@c.id').onclick = function () {
+                            //<h3>Html.ActionLink(ch.title, "SetCurrent", "RSS", new { nm = ch.title }, null)</h3>
+                            $.ajax({
+                                url: "@Url.Action("ExpandCategory", "RSS", new { cid = c.id })",
+                                type: "GET",
+                                
+                            success: function (data) { $("#ListDiv").empty().html(data); }
+                            })
+                        }
+                    </text>
+                }
+
+
+                @foreach (var ch in Model.subscriptions)
+                { 
+                    string bid = ch.id + "rm";
+                    string ed = ch.id + "ed";
+                    <text>
+                        document.getElementById('@bid').onclick = function () {
+                            var ttl = "@Html.Raw(ch.title)";
+                            if (window.confirm('Remove ' + ttl + '?')) {
+                                
+                                $.ajax({
+                                    url: "@Url.Action("RemoveChannel", "RSS", new { channelID = ch.id})",
+                                    success: function () { location.reload(true); }
+                                });
+                            }
+                            
+                        }
+
+            document.getElementById('@ed').onclick = function () {
+                var ttl = "@Html.Raw(ch.title)";
+                var nName = window.prompt("Rename Subscription", ttl);
+                if (nName != ttl && nName != null && nName != "")
+                {
+                    $.ajax({
+                        url: "@Url.Action("EditChannel", "RSS")",
+                        data: {channelID: @ch.id, nName: nName},
+                        success: function () { location.reload(true);}
+                    });
+                }
+            }
+                    </text>
+                }
+
+        });
+    </script>
+</head>
+<body>
+    <div id="ListDiv">
+        <table>
+            @foreach (var c in Model.categories)
+            {
+                <tr>
+                    <td>
+                        <h1 class="cat" id="@c.id"><i>@c.name</i></h1>
+                        @if (c.isCurrent == true)
+                        {
+                            <ul>
+                                @foreach (var ch in Model.subscriptions)
+                                {
+                                    if (ch.categoryId == c.id)
+                                    {
+                                        string bid = ch.id + "rm";
+                                        string ed = ch.id + "ed";
+                                        <li>
+                                            <h2>
+                                                @Html.ActionLink(ch.title, "SetCurrent", "RSS", new { nm = ch.title }, null) &nbsp;
+                                                <button id="@ed" class="btnEdit"></button>
+                                                <button id="@bid" class="btnRem"></button>
+                                        </h2>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        }
+                    </td>
+                </tr>
+
+            }
+            <tr>
+                <td>
+                    
+                </td>
+            </tr>
+        </table>
+
+    </div>
+</body>
+</html>

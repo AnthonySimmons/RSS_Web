@@ -1,0 +1,58 @@
+﻿@using RSS.Models
+@model List<RSSUser>
+@{
+    /*
+     * @model List<Person> is telling Razor to expect a List of People to be passed in as the
+     * file's model (Accessible elsewhere through "Model").
+     * */
+
+    //We haven't gotten to layout pages yet, but when we do, we'll need to change this.
+    //For now, just set to NULL.
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/StyleSheet.css")" />
+    <title>Index</title>
+</head>
+<body>
+
+    <div class="ttl">
+        <!-- Html.ActionLink is the MVC equivalent of <a href="..."></a>
+            -->
+        
+            <h3>@Html.ActionLink("ChatRoom", "ChatIndex", "ChatRoom")</h3>
+            <h3>@Html.ActionLink("Logout", "Logout")</h3>
+            <table>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th>Email Address</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Password</th>
+                </tr>
+
+                <!-- Loop through our List of People and create a new TR for each item -->
+                @foreach (RSSUser person in Model)
+                {
+                    <tr>
+                        <td></td>
+                        <td>@Html.ActionLink("Edit", "Edit", new { id = person.Id })</td>
+
+                        <!-- Using the @@ tag will inject the object's value into HTML -->
+                        <td>@person.Email</td>
+                        <td>@person.FirstName</td>
+                        <td>@person.LastName</td>
+                        <td>@person.Password</td>
+                    </tr>
+                }
+            </table>
+        
+    </div>
+</body>
+</html>

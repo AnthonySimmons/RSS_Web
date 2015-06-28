@@ -1,0 +1,69 @@
+﻿@using RSS.Models;
+@using RSS
+@model RSSUser
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/StyleSheet.css")" />
+
+    <script type="text/javascript" src="~/Scripts/jquery-2.1.0.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('btnHelp').onclick = function btnHelpClick(event) {
+                var message = "Author: Anthony Simmons \nWhen Creating a new user, the user must be enabled by the Admin account. For the purpose of this assignment, Admin credentials are { Admin@Blogs.com , password }. Once logged in as Admin, go to the user manager page and edit a specified user, then select Can Write checkbox to enable a user.";
+                window.confirm(message);
+            }
+        });
+    </script>
+
+</head>
+<body>
+    <div class="lgn">
+        <h1 class="textTtl">RSS Client</h1>
+
+        @Html.ActionLink("Register New User", "Create")
+        
+        @using (Html.BeginForm())
+        {
+            if (Session["userid"] == null)
+            {
+                @Html.ValidationSummary(false)
+            }
+            <table>
+
+                <tr>
+                    <!-- Html.LabelFor / EditorFor / ValidationMessageFor is the MVC way to build
+                    form elements without having to worry about specific input types.  Very handy.
+                    -->
+                    <td>@Html.LabelFor(m => m.Email)</td>
+                    <td>@Html.EditorFor(m => m.Email)</td>
+                    <td>@Html.ValidationMessageFor(m => m.Email)</td>
+                </tr>
+                <tr>
+                    <!-- Html.LabelFor / EditorFor / ValidationMessageFor is the MVC way to build
+                    form elements without having to worry about specific input types.  Very handy.
+                    -->
+                    <td>@Html.LabelFor(m => m.Password)</td>
+                    <td>@Html.EditorFor(m => m.Password)</td>
+                    <td>@Html.ValidationMessageFor(m => m.Password)</td>
+                </tr>
+            </table>
+            
+            <input id="btn" type="submit" value="Login" style="background-color:silver" />
+        }
+        <button id="btnHelp" value="Help" onclick="window.confirm('Please see the readme file included with this project.')">
+            Help
+        </button>
+    </div>
+</body>
+</html>
